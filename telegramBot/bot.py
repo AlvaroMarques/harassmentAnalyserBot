@@ -11,12 +11,17 @@ async def main():
     list = await bot.get_updates(offset=5)
     for element in list:
         if str(element.message['message_id']) not in json_object:
-            json_object[str(element.message['message_id'])] = element.message['text']
-            #print(str(element.message['from']['id'])+':', element.message['text'])
-            # Writing to sample.json
-            with open("messages.json", "w") as outfile:
-                outfile.write(json.dumps(json_object))
-            print(json_object)
+            if element.message['text'] == None:
+                file = await bot.get_file(element.message['photo'][2]['file_id'])
+                await file.download()
+            else:
+                json_object[str(element.message['message_id'])] = element.message['text']
+                #print(str(element.message['from']['id'])+':', element.message['text'])
+                print(element.message)
+                # Writing to sample.json
+                with open("messages.json", "w") as outfile:
+                    outfile.write(json.dumps(json_object))
+                print(json_object)
 
 
 if __name__ == '__main__':
